@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 public class GameplayCanvas : MonoBehaviour
 {
-    [SerializeField] private CharacterController characterController;
+    [SerializeField] private CharacterCtrl characterController;
     [SerializeField] private UIButton kickButton;
     [SerializeField] private UIButton autoKickButton;
     [FormerlySerializedAs("ResetButton")]
@@ -15,7 +15,7 @@ public class GameplayCanvas : MonoBehaviour
     {
         if (characterController == null)
         {
-            characterController = FindObjectOfType<CharacterController>();
+            characterController = FindObjectOfType<CharacterCtrl>();
         }
 
         if (kickButton != null)

@@ -4,7 +4,7 @@ public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField, Min(0f)] private float smoothTime = 0.2f;
-    [SerializeField] private CharacterController characterController;
+    [SerializeField] private CharacterCtrl characterController;
     [SerializeField, Min(0f)] private float goalArrivalDistance = 0.25f;
     [SerializeField, Min(0f)] private float postGoalFollowDuration = 2f;
     [SerializeField, Min(0f)] private float ballFollowTimeout = 5f;
@@ -25,7 +25,7 @@ public class CameraFollow : MonoBehaviour
 
         if (characterController == null && characterTarget != null)
         {
-            characterController = characterTarget.GetComponent<CharacterController>();
+            characterController = characterTarget.GetComponent<CharacterCtrl>();
         }
 
         if (characterController != null)

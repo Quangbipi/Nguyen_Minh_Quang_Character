@@ -4,10 +4,10 @@ public abstract class CharacterState
 {
     protected static readonly int SpeedHash = UnityEngine.Animator.StringToHash("Speed");
 
-    protected CharacterController Character { get; }
+    protected CharacterCtrl Character { get; }
     protected Animator CharacterAnimator => Character.Animator;
 
-    protected CharacterState(CharacterController character)
+    protected CharacterState(CharacterCtrl character)
     {
         Character = character;
     }

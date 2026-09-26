@@ -1,6 +1,6 @@
 public sealed class CharacterRunState : CharacterState
 {
-    public CharacterRunState(CharacterController character) : base(character)
+    public CharacterRunState(CharacterCtrl character) : base(character)
     {
     }
 

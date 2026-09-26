@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
-public class CharacterController : MonoBehaviour
+public class CharacterCtrl : MonoBehaviour
 {
     private const int ConeArcSegments = 20;
     private const int InitialBallColliderBufferSize = 8;

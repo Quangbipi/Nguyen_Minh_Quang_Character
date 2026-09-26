@@ -1,6 +1,6 @@
 public sealed class CharacterIdleState : CharacterState
 {
-    public CharacterIdleState(CharacterController character) : base(character)
+    public CharacterIdleState(CharacterCtrl character) : base(character)
     {
     }
 
