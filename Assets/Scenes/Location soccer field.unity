@@ -137,6 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 206975174}
   - component: {fileID: 206975175}
+  - component: {fileID: 206975176}
   m_Layer: 7
   m_Name: Goal Vfx Trigger
   m_TagString: Untagged
@@ -174,12 +175,39 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 3.25, y: 1.65, z: 0.65}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &206975176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206975173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c9fc02eaf44413885fdc1804047850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePool: {fileID: 636899091}
+  spawnPoint: {fileID: 557695266}
+  ballLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!4 &273388692 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5627274843178474877, guid: f3059fe87515fa740afe2ac7e9819671, type: 3}
+  m_PrefabInstance: {fileID: 3949143139653623698}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &367944568 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5627274842159923193, guid: f3059fe87515fa740afe2ac7e9819671, type: 3}
+  m_PrefabInstance: {fileID: 3949143139653623698}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &507543445
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -583,7 +611,7 @@ MonoBehaviour:
   characterController: {fileID: 1075524804}
   goalArrivalDistance: 0.25
   postGoalFollowDuration: 2
-  ballFollowTimeout: 5
+  ballFollowTimeout: 3
 --- !u!1 &874682540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,7 +1046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 82a2914d8f86c62488456950c8330e38, type: 3}
       propertyPath: m_Name
-      value: Jammo_LowPoly
+      value: Jammo
       objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 82a2914d8f86c62488456950c8330e38, type: 3}
       propertyPath: m_Layer
@@ -1268,7 +1296,7 @@ MonoBehaviour:
     m_Bits: 128
   kickTravelTime: 1
   goals:
-  - {fileID: 3949143139653623709}
+  - {fileID: 3949143139653623712}
   - {fileID: 3949143139653623704}
   balls:
   - {fileID: 1713309966}
@@ -1276,6 +1304,9 @@ MonoBehaviour:
   - {fileID: 1457115053}
   - {fileID: 1888317366}
   - {fileID: 919129312}
+  fieldCornerA: {fileID: 367944568}
+  fieldCornerB: {fileID: 273388692}
+  boundaryPadding: 0.5
 --- !u!65 &1075524805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2149,6 +2180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2053277636}
   - component: {fileID: 2053277637}
+  - component: {fileID: 2053277638}
   m_Layer: 7
   m_Name: Goal Vfx Trigger
   m_TagString: Untagged
@@ -2186,12 +2218,29 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 3.25, y: 1.65, z: 0.65}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2053277638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053277635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c9fc02eaf44413885fdc1804047850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePool: {fileID: 636899091}
+  spawnPoint: {fileID: 937641262}
+  ballLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1001 &1350086097334780964
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2397,7 +2446,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4750284360416980202, guid: f3059fe87515fa740afe2ac7e9819671, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3949143139653623709}
+      addedObject: {fileID: 3949143139653623712}
     - targetCorrespondingSourceObject: {fileID: 4750284359945493098, guid: f3059fe87515fa740afe2ac7e9819671, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3949143139653623704}
@@ -2426,7 +2475,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5229754924363149124, guid: 1b80dfbbb388ad54db128e6041e45217, type: 3}
 --- !u!4 &3949143139653623708 stripped
@@ -2434,7 +2483,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5379469326095955536, guid: f3059fe87515fa740afe2ac7e9819671, type: 3}
   m_PrefabInstance: {fileID: 3949143139653623698}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &3949143139653623709
+--- !u!64 &3949143139653623712
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

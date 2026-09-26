@@ -26,6 +26,11 @@ public class CharacterController : MonoBehaviour
     [SerializeField] private Collider[] goals;
     [SerializeField] private Collider[] balls;
 
+    [Header("Movement Bounds")]
+    [SerializeField] private Transform fieldCornerA;
+    [SerializeField] private Transform fieldCornerB;
+    [SerializeField, Min(0f)] private float boundaryPadding = 0.5f;
+
     private Collider[] ballColliderBuffer = new Collider[InitialBallColliderBufferSize];
     private Collider nearbyBall;
     private CharacterState currentState;
@@ -85,9 +90,36 @@ public class CharacterController : MonoBehaviour
         }
 
         Vector3 moveDirection = direction.normalized;
-        transform.position += moveDirection * (moveSpeed * Time.deltaTime);
+        Vector3 nextPosition =
+            transform.position + moveDirection * (moveSpeed * Time.deltaTime);
 
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+        if (fieldCornerA != null && fieldCornerB != null)
+        {
+            float minX = Mathf.Min(
+                fieldCornerA.position.x,
+                fieldCornerB.position.x) + boundaryPadding;
+
+            float maxX = Mathf.Max(
+                fieldCornerA.position.x,
+                fieldCornerB.position.x) - boundaryPadding;
+
+            float minZ = Mathf.Min(
+                fieldCornerA.position.z,
+                fieldCornerB.position.z) + boundaryPadding;
+
+            float maxZ = Mathf.Max(
+                fieldCornerA.position.z,
+                fieldCornerB.position.z) - boundaryPadding;
+
+            nextPosition.x = Mathf.Clamp(nextPosition.x, minX, maxX);
+            nextPosition.z = Mathf.Clamp(nextPosition.z, minZ, maxZ);
+        }
+
+        transform.position = nextPosition;
+
+        Quaternion targetRotation =
+            Quaternion.LookRotation(moveDirection, Vector3.up);
+
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
             targetRotation,
