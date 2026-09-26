@@ -1,6 +1,6 @@
 public sealed class CharacterRunState : CharacterState
 {
-    public CharacterRunState(CharacterCtrl character) : base(character)
+    public CharacterRunState(ICharacterStateContext character) : base(character)
     {
     }
 
@@ -13,7 +13,7 @@ public sealed class CharacterRunState : CharacterState
     {
         if (Character.MoveInput.sqrMagnitude <= 0f)
         {
-            Character.ChangeState(Character.IdleState);
+            Character.ChangeState(CharacterStateId.Idle);
             return;
         }
 
