@@ -106,6 +106,14 @@ public class CharacterController : MonoBehaviour
         ballCheckOriginOffset = checkOriginOffset;
     }
 
+    public void ConfigureAutoKick(
+        Collider[] candidateBalls,
+        Collider[] candidateGoals)
+    {
+        balls = candidateBalls;
+        goals = candidateGoals;
+    }
+
     public bool CheckForBallInFront()
     {
         Vector3 origin = transform.TransformPoint(ballCheckOriginOffset);
@@ -139,6 +147,30 @@ public class CharacterController : MonoBehaviour
         }
 
         Collider nearestGoal = FindNearestGoal(nearbyBall.bounds.center);
+        if (nearestGoal == null)
+        {
+            return false;
+        }
+
+        float travelTime = Mathf.Max(0.1f, kickTravelTime);
+        Vector3 displacement = nearestGoal.bounds.center - ballRigidbody.position;
+        ballRigidbody.velocity = displacement / travelTime
+            - Physics.gravity * (travelTime * 0.5f);
+
+        BallKicked?.Invoke(ballRigidbody.transform, nearestGoal);
+        return true;
+    }
+
+    public bool TryAutoKick()
+    {
+        Collider farthestBall = FindFarthestBall(transform.position);
+        if (farthestBall == null
+            || !farthestBall.TryGetComponent(out Rigidbody ballRigidbody))
+        {
+            return false;
+        }
+
+        Collider nearestGoal = FindNearestGoal(farthestBall.bounds.center);
         if (nearestGoal == null)
         {
             return false;
@@ -199,12 +231,17 @@ public class CharacterController : MonoBehaviour
 
     private Collider FindNearestGoal(Vector3 ballPosition)
     {
+        if (goals == null)
+        {
+            return null;
+        }
+
         Collider nearestGoal = null;
         float nearestSqrDistance = float.PositiveInfinity;
 
         foreach (Collider goal in goals)
         {
-            if (goal == null)
+            if (goal == null || !goal.enabled || !goal.gameObject.activeInHierarchy)
             {
                 continue;
             }
@@ -221,6 +258,135 @@ public class CharacterController : MonoBehaviour
 
         return nearestGoal;
 
+    }
+
+    private Collider FindFarthestBall(Vector3 fromPosition)
+    {
+        Collider[] candidateBalls = GetAutoKickBallCandidates();
+        Collider farthestBall = null;
+        float farthestSqrDistance = float.NegativeInfinity;
+
+        foreach (Collider candidate in candidateBalls)
+        {
+            if (candidate == null
+                || !candidate.enabled
+                || !candidate.gameObject.activeInHierarchy
+                || !candidate.TryGetComponent(out Rigidbody ballRigidbody)
+                || !ballRigidbody.gameObject.activeInHierarchy
+                || ballRigidbody.isKinematic
+                || IsBallInsideAnyGoal(candidate, goals))
+            {
+                continue;
+            }
+
+            float sqrDistance =
+                (candidate.bounds.center - fromPosition).sqrMagnitude;
+            if (sqrDistance > farthestSqrDistance
+                || (sqrDistance == farthestSqrDistance
+                    && IsStableTieBreakPreferred(candidate, farthestBall)))
+            {
+                farthestSqrDistance = sqrDistance;
+                farthestBall = candidate;
+            }
+        }
+
+        return farthestBall;
+    }
+
+    private bool IsStableTieBreakPreferred(Collider candidate, Collider current)
+    {
+        if (current == null)
+        {
+            return true;
+        }
+
+        string candidateKey = GetHierarchyKey(candidate.transform);
+        string currentKey = GetHierarchyKey(current.transform);
+        int keyComparison = string.CompareOrdinal(candidateKey, currentKey);
+        if (keyComparison != 0)
+        {
+            return keyComparison < 0;
+        }
+
+        return candidate.GetInstanceID() < current.GetInstanceID();
+    }
+
+    private string GetHierarchyKey(Transform target)
+    {
+        string hierarchyKey = target.name;
+        while (target.parent != null)
+        {
+            target = target.parent;
+            hierarchyKey = target.name + "/" + hierarchyKey;
+        }
+
+        return hierarchyKey;
+    }
+
+    private Collider[] GetAutoKickBallCandidates()
+    {
+        if (balls != null)
+        {
+            foreach (Collider candidate in balls)
+            {
+                if (candidate != null
+                    && candidate.gameObject.activeInHierarchy)
+                {
+                    return balls;
+                }
+            }
+        }
+
+        Collider[] sceneColliders = FindObjectsOfType<Collider>();
+        int matchingCount = 0;
+        foreach (Collider sceneCollider in sceneColliders)
+        {
+            if (sceneCollider.enabled
+                && IsInBallLayerMask(sceneCollider.gameObject.layer))
+            {
+                matchingCount++;
+            }
+        }
+
+        Collider[] discoveredBalls = new Collider[matchingCount];
+        int discoveredIndex = 0;
+        foreach (Collider sceneCollider in sceneColliders)
+        {
+            if (sceneCollider.enabled
+                && IsInBallLayerMask(sceneCollider.gameObject.layer))
+            {
+                discoveredBalls[discoveredIndex++] = sceneCollider;
+            }
+        }
+
+        return discoveredBalls;
+    }
+
+    private bool IsBallInsideAnyGoal(Collider ball, Collider[] goalColliders)
+    {
+        if (ball == null || goalColliders == null)
+        {
+            return false;
+        }
+
+        Vector3 ballCenter = ball.bounds.center;
+        foreach (Collider goal in goalColliders)
+        {
+            if (goal != null
+                && goal.enabled
+                && goal.gameObject.activeInHierarchy
+                && goal.bounds.Contains(ballCenter))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsInBallLayerMask(int layer)
+    {
+        return (ballLayerMask.value & (1 << layer)) != 0;
     }
 
     private int FindBallColliders(Vector3 origin)
